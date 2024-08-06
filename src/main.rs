@@ -87,6 +87,27 @@ fn forward_prop(
     return (z1, a1, z2, a2);
 }
 
+#[allow(dead_code)]
+fn one_hot_encode(y: Vec<usize>) -> Vec<Vec<usize>> {
+    let max: usize = y.iter().fold(0, |prev, curr| prev.max(*curr));
+    let mut encoded: Vec<Vec<usize>> = vec![vec![0; max + 1]; y.len()];
+    for i in 0..y.len() {
+        encoded[i][y[i]] = 1;
+    }
+    encoded
+}
+
+#[allow(dead_code, unused_variables)]
+fn back_prop(
+    z1: Vec<f64>,
+    a1: Vec<f64>,
+    z2: Vec<f64>,
+    a2: Vec<f64>,
+    w2: Vec<Vec<f64>>,
+    y: Vec<f64>,
+) {
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -179,6 +200,22 @@ mod tests {
         ];
 
         let actual = softmax(&input_vector);
+        assert_eq!(actual, expected);
+    }
+
+    #[test]
+    fn test_one_hot_encoding() {
+        let input_vector: Vec<usize> = vec![1, 2, 0, 1, 2, 0];
+        let expected: Vec<Vec<usize>> = vec![
+            vec![0, 1, 0],
+            vec![0, 0, 1],
+            vec![1, 0, 0],
+            vec![0, 1, 0],
+            vec![0, 0, 1],
+            vec![1, 0, 0],
+        ];
+
+        let actual = one_hot_encode(input_vector);
         assert_eq!(actual, expected);
     }
 }
