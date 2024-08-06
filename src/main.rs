@@ -5,10 +5,10 @@ type NetworkParams = (Vec<Vec<f64>>, Vec<f64>, Vec<Vec<f64>>, Vec<f64>);
 fn main() {
     let result = init_params();
     let (w1, b1, w2, b2) = result;
-    dbg!(w1);
-    dbg!(b1);
-    dbg!(w2);
-    dbg!(b2);
+    dbg!(w1.len());
+    dbg!(b1.len());
+    dbg!(w2.len());
+    dbg!(b2.len());
 }
 
 fn init_params() -> NetworkParams {
@@ -45,16 +45,43 @@ fn generate_random_vector(cols: usize, min: f64, max: f64) -> Vec<f64> {
     vector
 }
 
-fn relu(z: Vec<f64>) -> Vec<f64> {
+fn relu(z: &Vec<f64>) -> Vec<f64> {
     z.iter().map(|x| x.max(0.0)).collect()
 }
 
-//fn forward_prop(w1: Vec<Vec<f64>>, b1: Vec<Vec<f64>>, w2: Vec<Vec<f64>>, b2: Vec<Vec<f64>>) {
-// let z1 = w1.dot(x) + b1;
-// let a1 = relu(z1);
-// let z2 = w2.dot(a1) + b2;
-// let a2 = softmax(z2);
-//}
+fn dot_product(a: Vec<f64>, b: Vec<f64>) -> f64 {
+    a.iter().zip(b.iter()).map(|(a, b)| a * b).sum()
+}
+
+fn softmax(z: &Vec<f64>) -> Vec<f64> {
+    let max = z
+        .iter()
+        .fold(f64::NEG_INFINITY, |prev, curr| prev.max(*curr));
+    let exp_sum: f64 = z.iter().map(|x| (x - max).exp()).sum();
+    z.iter().map(|x| (x - max).exp() / exp_sum).collect()
+}
+
+fn forward_prop(
+    w1: Vec<Vec<f64>>,
+    b1: Vec<f64>,
+    w2: Vec<Vec<f64>>,
+    b2: Vec<f64>,
+    x: Vec<f64>,
+) -> (Vec<f64>, Vec<f64>, Vec<f64>, Vec<f64>) {
+    let mut z1: Vec<f64> = vec![0.0; w1.len()];
+    for i in 0..z1.len() {
+        z1[i] = dot_product(w1[i].clone(), x.clone()) + b1[i];
+    }
+    let a1 = relu(&z1);
+
+    let mut z2: Vec<f64> = vec![0.0; w2.len()];
+    for i in 0..z2.len() {
+        z2[i] = dot_product(w2[i].clone(), a1.clone()) + b2[i];
+    }
+    let a2 = softmax(&z2);
+
+    return (z1, a1, z2, a2);
+}
 
 #[cfg(test)]
 mod tests {
@@ -116,11 +143,38 @@ mod tests {
     }
 
     #[test]
-    fn test_relu_function() {
+    fn test_relu() {
         let input_vector: Vec<f64> = vec![-1.0, 2.0, -3.0, 4.0, -5.0];
         let expected: Vec<f64> = vec![0.0, 2.0, 0.0, 4.0, 0.0];
 
-        let actual = relu(input_vector);
+        let actual = relu(&input_vector);
+        assert_eq!(actual, expected);
+    }
+
+    #[test]
+    fn test_dot_product() {
+        let a: Vec<f64> = vec![1.0, 2.0, 3.0];
+        let b: Vec<f64> = vec![4.0, 5.0, 6.0];
+        let expected: f64 = 32.0;
+
+        let actual = dot_product(a, b);
+        assert_eq!(actual, expected);
+    }
+
+    #[test]
+    fn test_softmax() {
+        let input_vector: Vec<f64> = vec![1.0, 2.0, 3.0, 4.0, 1.0, 2.0, 3.0];
+        let expected: Vec<f64> = vec![
+            0.02364054302159139,
+            0.06426165851049616,
+            0.17468129859572226,
+            0.47483299974438037,
+            0.02364054302159139,
+            0.06426165851049616,
+            0.17468129859572226,
+        ];
+
+        let actual = softmax(&input_vector);
         assert_eq!(actual, expected);
     }
 }
