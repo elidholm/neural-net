@@ -1,4 +1,4 @@
-# Neural-Neto
+# Neural-Net
 
 ## Neural Network from Scratch in Rust
 This repository contains an implementation of a neural network from
@@ -22,4 +22,4 @@ Contributions are welcome! Please feel free to submit pull requests,
 open issues, or suggest features.
 
 ### License
-This project is licensed under the [Apache 2.0](https://www.apache.org/licenses/LICENSE-2.0) License.
+This project is licensed under the [Apache-2.0](https://www.apache.org/licenses/LICENSE-2.0) license.
