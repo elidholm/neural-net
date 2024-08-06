@@ -10,10 +10,10 @@
 
 ## Neural Network from Scratch in Rust
 This repository contains an implementation of a neural network from
-scratch using Rust, with minimal reliance on external packages. The
-goal is to provide a clear and educational example of how neural
-networks operate at a fundamental level, offering insights into both
-neural network theory and Rust programming.
+scratch using [Rust](https://www.rust-lang.org/), with minimal reliance
+on external packages. The goal is to provide a clear and educational
+example of how neural networks operate at a fundamental level, offering
+insights into both neural network theory and Rust programming.
 
 ### Features
 - **Pure Rust Implementation:** Built using Rust's standard library,
@@ -30,4 +30,5 @@ Contributions are welcome! Please feel free to submit pull requests,
 open issues, or suggest features.
 
 ### License
-This project is licensed under the [Apache-2.0](https://www.apache.org/licenses/LICENSE-2.0) license.
+This project is licensed under the [Apache-2.0](https://www.apache.org/licenses/LICENSE-2.0)
+license.

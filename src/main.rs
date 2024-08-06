@@ -1,3 +1,91 @@
+use rand::Rng;
+
+type NetworkParams = (Vec<Vec<f64>>, Vec<Vec<f64>>, Vec<Vec<f64>>, Vec<Vec<f64>>);
+
 fn main() {
-    println!("Hello, world!");
+    let result = init_params();
+    let (w1, b1, w2, b2) = result;
+    dbg!(w1);
+    dbg!(b1);
+    dbg!(w2);
+    dbg!(b2);
+}
+
+fn init_params() -> NetworkParams {
+    let w1: Vec<Vec<f64>> = generate_random_matrix(10, 784, -0.5, 0.5);
+    let b1: Vec<Vec<f64>> = generate_random_matrix(10, 1, -0.5, 0.5);
+    let w2: Vec<Vec<f64>> = generate_random_matrix(10, 10, -0.5, 0.5);
+    let b2: Vec<Vec<f64>> = generate_random_matrix(10, 1, -0.5, 0.5);
+
+    return (w1, b1, w2, b2);
+}
+
+fn generate_random_matrix(rows: usize, cols: usize, min: f64, max: f64) -> Vec<Vec<f64>> {
+    // Initialize a 2D array
+    let mut matrix: Vec<Vec<f64>> = vec![vec![0.0; cols]; rows];
+
+    // Create a random number generator
+    let mut rng = rand::thread_rng();
+
+    // Fill the array with random numbers between MIN and MAX
+    for i in 0..rows {
+        for j in 0..cols {
+            matrix[i][j] = rng.gen_range(min..=max);
+        }
+    }
+
+    matrix
+}
+
+fn relu(z: Vec<f64>) -> Vec<f64> {
+    z.iter().map(|x| x.max(0.0)).collect()
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn correct_size_of_random_matrix() {
+        let expected_rows: usize = 10;
+        let expected_cols: usize = 13;
+
+        let result = generate_random_matrix(expected_rows, expected_cols, -1.0, 1.0);
+        let actual_rows = result.len();
+        let actual_cols = result[0].len();
+        assert!(actual_rows == expected_rows, "Expected rows: {:.3}\tActual rows: {:.3}", expected_rows, actual_rows);
+        assert!(actual_cols == expected_cols, "Expected cols: {:.3}\tActual cols: {:.3}", expected_cols, actual_cols);
+    }
+
+    #[test]
+    fn correct_range_of_random_values() {
+        let expected_min: f64 = 0.5;
+        let expected_max: f64 = 0.5;
+        let result = generate_random_matrix(10, 784, expected_min, expected_max);
+
+        let actual_max: f64 = result.iter()
+            .map(|f| f
+                .iter()
+                .fold(f64::NEG_INFINITY, |prev, curr| prev.max(*curr)))
+            .fold(f64::NEG_INFINITY, |prev, curr| prev.max(curr));
+
+        let actual_min: f64 = result.iter()
+            .map(|f| f
+                .iter()
+                .fold(f64::INFINITY, |prev, curr| prev.min(*curr)))
+            .fold(f64::INFINITY, |prev, curr| prev.min(curr));
+
+        assert!(actual_max <= expected_max, "Expected max: {:.3} < Actual max: {:.3}", expected_max, actual_max);
+        assert!(actual_min >= expected_min, "Expected min: {:.3} > Actual min: {:.3}", expected_min, actual_min);
+    }
+
+    #[test]
+    fn test_relu_function() {
+        let input_vector: Vec<f64> = vec![-1.0, 2.0, -3.0, 4.0, -5.0];
+        let expected: Vec<f64> = vec![0.0, 2.0, 0.0, 4.0, 0.0];
+
+        let actual = relu(input_vector);
+        assert_eq!(actual, expected);
+    }
+
 }
