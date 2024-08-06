@@ -45,14 +45,17 @@ fn generate_random_vector(cols: usize, min: f64, max: f64) -> Vec<f64> {
     vector
 }
 
+#[allow(dead_code)]
 fn relu(z: &Vec<f64>) -> Vec<f64> {
     z.iter().map(|x| x.max(0.0)).collect()
 }
 
+#[allow(dead_code)]
 fn dot_product(a: Vec<f64>, b: Vec<f64>) -> f64 {
     a.iter().zip(b.iter()).map(|(a, b)| a * b).sum()
 }
 
+#[allow(dead_code)]
 fn softmax(z: &Vec<f64>) -> Vec<f64> {
     let max = z
         .iter()
@@ -61,6 +64,7 @@ fn softmax(z: &Vec<f64>) -> Vec<f64> {
     z.iter().map(|x| (x - max).exp() / exp_sum).collect()
 }
 
+#[allow(dead_code)]
 fn forward_prop(
     w1: Vec<Vec<f64>>,
     b1: Vec<f64>,
