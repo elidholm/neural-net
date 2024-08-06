@@ -53,8 +53,18 @@ mod tests {
         let result = generate_random_matrix(expected_rows, expected_cols, -1.0, 1.0);
         let actual_rows = result.len();
         let actual_cols = result[0].len();
-        assert!(actual_rows == expected_rows, "Expected rows: {:.3}\tActual rows: {:.3}", expected_rows, actual_rows);
-        assert!(actual_cols == expected_cols, "Expected cols: {:.3}\tActual cols: {:.3}", expected_cols, actual_cols);
+        assert!(
+            actual_rows == expected_rows,
+            "Expected rows: {:.3}\tActual rows: {:.3}",
+            expected_rows,
+            actual_rows
+        );
+        assert!(
+            actual_cols == expected_cols,
+            "Expected cols: {:.3}\tActual cols: {:.3}",
+            expected_cols,
+            actual_cols
+        );
     }
 
     #[test]
@@ -63,20 +73,31 @@ mod tests {
         let expected_max: f64 = 0.5;
         let result = generate_random_matrix(10, 784, expected_min, expected_max);
 
-        let actual_max: f64 = result.iter()
-            .map(|f| f
-                .iter()
-                .fold(f64::NEG_INFINITY, |prev, curr| prev.max(*curr)))
+        let actual_max: f64 = result
+            .iter()
+            .map(|f| {
+                f.iter()
+                    .fold(f64::NEG_INFINITY, |prev, curr| prev.max(*curr))
+            })
             .fold(f64::NEG_INFINITY, |prev, curr| prev.max(curr));
 
-        let actual_min: f64 = result.iter()
-            .map(|f| f
-                .iter()
-                .fold(f64::INFINITY, |prev, curr| prev.min(*curr)))
+        let actual_min: f64 = result
+            .iter()
+            .map(|f| f.iter().fold(f64::INFINITY, |prev, curr| prev.min(*curr)))
             .fold(f64::INFINITY, |prev, curr| prev.min(curr));
 
-        assert!(actual_max <= expected_max, "Expected max: {:.3} < Actual max: {:.3}", expected_max, actual_max);
-        assert!(actual_min >= expected_min, "Expected min: {:.3} > Actual min: {:.3}", expected_min, actual_min);
+        assert!(
+            actual_max <= expected_max,
+            "Expected max: {:.3} < Actual max: {:.3}",
+            expected_max,
+            actual_max
+        );
+        assert!(
+            actual_min >= expected_min,
+            "Expected min: {:.3} > Actual min: {:.3}",
+            expected_min,
+            actual_min
+        );
     }
 
     #[test]
@@ -87,5 +108,4 @@ mod tests {
         let actual = relu(input_vector);
         assert_eq!(actual, expected);
     }
-
 }
