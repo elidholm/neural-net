@@ -1,6 +1,6 @@
 use rand::Rng;
 
-type NetworkParams = (Vec<Vec<f64>>, Vec<Vec<f64>>, Vec<Vec<f64>>, Vec<Vec<f64>>);
+type NetworkParams = (Vec<Vec<f64>>, Vec<f64>, Vec<Vec<f64>>, Vec<f64>);
 
 fn main() {
     let result = init_params();
@@ -13,33 +13,48 @@ fn main() {
 
 fn init_params() -> NetworkParams {
     let w1: Vec<Vec<f64>> = generate_random_matrix(10, 784, -0.5, 0.5);
-    let b1: Vec<Vec<f64>> = generate_random_matrix(10, 1, -0.5, 0.5);
+    let b1: Vec<f64> = generate_random_vector(10, -0.5, 0.5);
     let w2: Vec<Vec<f64>> = generate_random_matrix(10, 10, -0.5, 0.5);
-    let b2: Vec<Vec<f64>> = generate_random_matrix(10, 1, -0.5, 0.5);
+    let b2: Vec<f64> = generate_random_vector(10, -0.5, 0.5);
 
     return (w1, b1, w2, b2);
 }
 
 fn generate_random_matrix(rows: usize, cols: usize, min: f64, max: f64) -> Vec<Vec<f64>> {
-    // Initialize a 2D array
     let mut matrix: Vec<Vec<f64>> = vec![vec![0.0; cols]; rows];
 
-    // Create a random number generator
-    let mut rng = rand::thread_rng();
-
-    // Fill the array with random numbers between MIN and MAX
     for i in 0..rows {
-        for j in 0..cols {
-            matrix[i][j] = rng.gen_range(min..=max);
-        }
+        matrix[i] = generate_random_vector(cols, min, max);
     }
 
     matrix
 }
 
+fn generate_random_vector(cols: usize, min: f64, max: f64) -> Vec<f64> {
+    // Initialize a 2D array
+    let mut vector: Vec<f64> = vec![0.0; cols];
+
+    // Create a random number generator
+    let mut rng = rand::thread_rng();
+
+    // Fill the array with random numbers between MIN and MAX
+    for i in 0..cols {
+        vector[i] = rng.gen_range(min..=max);
+    }
+
+    vector
+}
+
 fn relu(z: Vec<f64>) -> Vec<f64> {
     z.iter().map(|x| x.max(0.0)).collect()
 }
+
+//fn forward_prop(w1: Vec<Vec<f64>>, b1: Vec<Vec<f64>>, w2: Vec<Vec<f64>>, b2: Vec<Vec<f64>>) {
+// let z1 = w1.dot(x) + b1;
+// let a1 = relu(z1);
+// let z2 = w2.dot(a1) + b2;
+// let a2 = softmax(z2);
+//}
 
 #[cfg(test)]
 mod tests {
